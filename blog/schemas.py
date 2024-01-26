@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import  List
+from typing import  List,Optional
 
 class Blog(BaseModel):
     title:str
@@ -37,4 +37,9 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    email : str | None = None
+    
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

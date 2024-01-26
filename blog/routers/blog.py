@@ -4,6 +4,8 @@ from .. import schemas
 from .. import models
 from ..database import Sessionlocal
 from sqlalchemy.orm import Session
+from ..oauth2 import get_current_user
+
 
 
 router=APIRouter(
@@ -20,7 +22,7 @@ def get_db():
         db.close()
 
 @router.get('',status_code=status.HTTP_200_OK)
-def all(db:Session=Depends(get_db)):
+def all(db:Session=Depends(get_db),current_user:schemas.User=Depends(get_current_user)):
     blogs=db.query(models.Blog).all()
     return blogs
 
