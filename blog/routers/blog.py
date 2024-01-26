@@ -28,7 +28,7 @@ def all(db:Session=Depends(get_db),current_user:schemas.User=Depends(get_current
 
 
 @router.post('',status_code=status.HTTP_201_CREATED)
-def create(request:schemas.Blog, db:Session=Depends(get_db)):
+def create(request:schemas.Blog, db:Session=Depends(get_db),current_user:schemas.User=Depends(get_current_user)):
     new_blog=models.Blog(title=request.title,body=request.body,user_id=2)
     db.add(new_blog)
     db.commit()
@@ -38,7 +38,7 @@ def create(request:schemas.Blog, db:Session=Depends(get_db)):
 
 
 @router.delete('/{id}',status_code=status.HTTP_204_NO_CONTENT)
-def delete(id,db:Session=Depends(get_db)):
+def delete(id,db:Session=Depends(get_db),current_user:schemas.User=Depends(get_current_user)):
     if not db.query(models.Blog).filter(models.Blog.id==id).first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f'{id} does not exist')
     else:
@@ -49,7 +49,7 @@ def delete(id,db:Session=Depends(get_db)):
 
 
 @router.put('/{id}',status_code=status.HTTP_202_ACCEPTED)
-def update(id,request:schemas.Blog,db:Session=Depends(get_db)):
+def update(id,request:schemas.Blog,db:Session=Depends(get_db),current_user:schemas.User=Depends(get_current_user)):
     blog=db.query(models.Blog).filter(models.Blog.id==id).first()
     if blog:
         db.query(models.Blog).filter(models.Blog.id==id).update({'title':request.title,'body':request.body})
@@ -60,7 +60,7 @@ def update(id,request:schemas.Blog,db:Session=Depends(get_db)):
     
     
 @router.get('/{id}',status_code=status.HTTP_200_OK,response_model=schemas.ShowBlog)
-def retrieve(id,db:Session=Depends(get_db)):
+def retrieve(id,db:Session=Depends(get_db),current_user:schemas.User=Depends(get_current_user)):
     blog=db.query(models.Blog).filter(models.Blog.id==id).first()
     if not blog:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f'{id} does not exist')
